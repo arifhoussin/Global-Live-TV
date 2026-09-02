@@ -30,7 +30,7 @@ data class Channel(
 class MainActivity : AppCompatActivity() {
 
     // 🔴 আপনার গুগল অ্যাপস স্ক্রিপ্টের Web App লিঙ্ক এখানে দিন
-    private val SCRIPT_URL = "https://google.com"
+    private val SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd-TR4dWGjxEENEG900Zzi2wttqfZMi1yseRn4-wvFRdpTr6IHVvTGgJxUmekxmTCvNQ/exec"
 
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerView: PlayerView
