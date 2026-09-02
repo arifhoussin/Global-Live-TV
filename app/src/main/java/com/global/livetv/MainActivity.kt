@@ -12,6 +12,10 @@ import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.*
@@ -29,8 +33,8 @@ data class Channel(
 
 class MainActivity : AppCompatActivity() {
 
-    // আপনার আসল গুগল অ্যাপস স্ক্রিপ্ট লাইভ লিঙ্ক
-    private val SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd-TR4dWGjxEENEG900Zzi2wttqfZMi1yseRn4-wvFRdpTr6IHVvTGgJxUmekxmTCvNQ/execm"
+    // গুগল অ্যাপস স্ক্রিপ্টের লাইভ API লিঙ্ক
+    private val SCRIPT_URL = "https://google.com"
 
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerView: PlayerView
@@ -39,6 +43,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // গুগল মোবাইল এডস ইনিশিয়ালাইজেশন
+        MobileAds.initialize(this) {}
 
         val layout = android.widget.LinearLayout(this).apply {
             orientation = android.widget.LinearLayout.VERTICAL
@@ -54,13 +61,20 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = RecyclerView(this).apply {
             layoutParams = android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.MATCH_PARENT
-            )
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 0
+            ).apply { weight = 1f }
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
+        // আন্তর্জাতিক ব্যানার এডস প্যানেল
+        val adView = AdView(this).apply {
+            setAdSize(AdSize.BANNER)
+            adUnitId = "ca-app-pub-3940256099942544/6300978111"
+            loadAd(AdRequest.Builder().build())
+        }
+
         layout.addView(playerView)
+        layout.addView(adView)
         layout.addView(recyclerView)
         setContentView(layout)
 
@@ -75,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    Toast.makeText(this@MainActivity, "সার্ভার লোড হতে পারছে না!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "সার্ভার এরর!", Toast.LENGTH_SHORT).show()
                 }
             }
 
